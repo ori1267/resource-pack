@@ -230,6 +230,12 @@ RegisterNetEvent('nl_ffa:leftLobby', function()
         -- Restore inventory when leaving game
         RestoreInventory()
         isInGame = false
+        
+        -- Reset player state
+        local playerPed = PlayerPedId()
+        ClearPedTasksImmediately(playerPed)
+        SetEntityHealth(playerPed, 200)
+        SetPedArmour(playerPed, 0)
     end
     
     isInLobby = false
@@ -310,22 +316,72 @@ RegisterNetEvent('nl_ffa:leaderboardData', function(leaderboard)
     end
 end)
 
--- Death detection
+RegisterNetEvent('nl_ffa:lobbiesList', function(lobbies)
+    SendNUIMessage({
+        action = "lobbiesList",
+        data = lobbies
+    })
+end)
+
+-- Original death detection as backup
 CreateThread(function()
     while true do
-        Wait(100)
+        Wait(500)
         
         if isInGame then
             local playerPed = PlayerPedId()
             
-            if IsEntityDead(playerPed) then
+            if IsEntityDead(playerPed) and respawnTimer == 0 then
                 OnPlayerDeath()
-                
-                -- Wait for respawn
-                while IsEntityDead(playerPed) do
-                    Wait(100)
-                end
             end
+        end
+    end
+end)
+
+-- Kill detection for other players
+AddEventHandler('gameEventTriggered', function(name, args)
+    if name == 'CEventNetworkEntityDamage' then
+        local victim = args[1]
+        local attacker = args[2]
+        local damage = args[5]
+        local weapon = args[7]
+        
+        if isInGame and attacker == PlayerPedId() and IsPedAPlayer(victim) then
+            local victimPlayerId = NetworkGetPlayerIndexFromPed(victim)
+            if victimPlayerId ~= -1 and GetPlayerPed(victimPlayerId) ~= PlayerPedId() then
+                -- Check if this damage killed the victim
+                CreateThread(function()
+                    Wait(100) -- Small delay to ensure death is registered
+                    if IsEntityDead(victim) then
+                        OnPlayerKill()
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+-- Additional death detection using health monitoring
+CreateThread(function()
+    local lastHealth = 0
+    local wasAlive = true
+    
+    while true do
+        Wait(250)
+        
+        if isInGame then
+            local playerPed = PlayerPedId()
+            local currentHealth = GetEntityHealth(playerPed)
+            local isDead = IsEntityDead(playerPed)
+            
+            if wasAlive and isDead then
+                OnPlayerDeath()
+                wasAlive = false
+            elseif not wasAlive and not isDead then
+                wasAlive = true
+            end
+            
+            lastHealth = currentHealth
         end
     end
 end)

@@ -7,7 +7,7 @@ Config.Debug = false
 -- NPC Settings
 Config.NPC = {
     model = "s_m_y_dealer_01",
-    coords = vector4(100.0, -1000.0, 30.0, 0.0), -- Change to desired coordinates
+    coords = vector4(213.32, -810.77, 30.73, 160.0), -- Legion Square
     label = "FFA Manager",
     icon = "fas fa-gun"
 }

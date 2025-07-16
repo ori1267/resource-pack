@@ -148,11 +148,9 @@ function updateCurrentLobbyInfo(lobby) {
     
     // Show start button only for lobby creator
     const startBtn = document.getElementById('startGameBtn');
-    if (lobby.creator === getCurrentPlayerId()) {
-        startBtn.style.display = 'block';
-    } else {
-        startBtn.style.display = 'none';
-    }
+    // In FiveM, we check if the current player is the creator via server-side logic
+    // For now, we'll always show the button and let server validate
+    startBtn.style.display = 'block';
 }
 
 // Create lobby
