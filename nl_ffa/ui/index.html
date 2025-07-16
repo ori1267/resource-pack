@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFA Lobby System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app" style="display: none;">
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-container">
+            <div class="menu-header">
+                <h1><i class="fas fa-gun"></i> FFA Lobby System</h1>
+                <button class="close-btn" onclick="closeMenu()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="menu-content">
+                <div class="menu-buttons">
+                    <button class="menu-btn primary" onclick="showCreateLobby()">
+                        <i class="fas fa-plus"></i>
+                        Create Lobby
+                    </button>
+                    <button class="menu-btn secondary" onclick="showJoinLobby()">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Join Lobby
+                    </button>
+                </div>
+                
+                <!-- Current Lobby Info -->
+                <div id="currentLobbyInfo" style="display: none;">
+                    <div class="lobby-info-card">
+                        <h3>Current Lobby</h3>
+                        <div class="lobby-details">
+                            <p><strong>Name:</strong> <span id="lobbyName"></span></p>
+                            <p><strong>Players:</strong> <span id="lobbyPlayers"></span></p>
+                            <p><strong>Map:</strong> <span id="lobbyMap"></span></p>
+                            <p><strong>Weapons:</strong> <span id="lobbyWeapons"></span></p>
+                        </div>
+                        <div class="lobby-actions">
+                            <button class="menu-btn success" onclick="startGame()" id="startGameBtn" style="display: none;">
+                                <i class="fas fa-play"></i>
+                                Start Game
+                            </button>
+                            <button class="menu-btn danger" onclick="leaveLobby()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Leave Lobby
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Create Lobby Menu -->
+        <div id="createLobbyMenu" class="menu-container" style="display: none;">
+            <div class="menu-header">
+                <h2><i class="fas fa-plus"></i> Create Lobby</h2>
+                <button class="close-btn" onclick="showMainMenu()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="menu-content">
+                <form id="createLobbyForm" class="lobby-form">
+                    <div class="form-group">
+                        <label for="lobbyNameInput">Lobby Name</label>
+                        <input type="text" id="lobbyNameInput" placeholder="Enter lobby name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mapSelect">Map</label>
+                        <select id="mapSelect" required>
+                            <option value="">Select a map</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weaponSelect">Weapons</label>
+                        <select id="weaponSelect" required>
+                            <option value="">Select weapons</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxPlayersInput">Max Players</label>
+                        <input type="number" id="maxPlayersInput" min="2" max="16" value="8" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="menu-btn success">
+                            <i class="fas fa-check"></i>
+                            Create Lobby
+                        </button>
+                        <button type="button" class="menu-btn secondary" onclick="showMainMenu()">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Join Lobby Menu -->
+        <div id="joinLobbyMenu" class="menu-container" style="display: none;">
+            <div class="menu-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Join Lobby</h2>
+                <div class="header-actions">
+                    <button class="refresh-btn" onclick="refreshLobbies()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="close-btn" onclick="showMainMenu()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="menu-content">
+                <div id="lobbiesList" class="lobbies-list">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Loading lobbies...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leaderboard -->
+        <div id="leaderboard" class="leaderboard-container" style="display: none;">
+            <div class="leaderboard-header">
+                <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+                <button class="close-btn" onclick="closeLeaderboard()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="leaderboard-content">
+                <div class="player-stats">
+                    <div class="stat">
+                        <span class="stat-label">Your Kills:</span>
+                        <span class="stat-value" id="playerKills">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Your Deaths:</span>
+                        <span class="stat-value" id="playerDeaths">0</span>
+                    </div>
+                </div>
+                
+                <div id="leaderboardList" class="leaderboard-list">
+                    <!-- Leaderboard entries will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
